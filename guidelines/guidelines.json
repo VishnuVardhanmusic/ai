@@ -1,0 +1,226 @@
+[
+  {
+    "id": "G001",
+    "rule": "Avoid usage of ## operator",
+    "severity": "medium",
+    "category": "Preprocessor",
+    "description": "The ## operator is used for token pasting however, its usage can lead to confusing and hard-to-debug code. It's recommended to avoid it and instead use more explicit and readable code constructs.",
+    "example": "#define COMBINE(a,b) a##b"
+  },
+  {
+    "id": "G002",
+    "rule": "Avoid usage of void pointers",
+    "severity": "high",
+    "category": "Type Safety",
+    "description": "Void pointers lead to type-unsafe behavior, obscure code semantics, and are prone to runtime errors if not handled carefully.",
+    "example": "void *ptr; int *iptr = (int *)ptr;"
+  },
+  {
+    "id": "G003",
+    "rule": "Avoid casting pointer to object types into pointer to other type",
+    "severity": "high",
+    "category": "Type Safety",
+    "description": "Casting one pointer type into another can break memory alignment rules and lead to undefined behavior on certain architectures.",
+    "example": "char *ptr; MyStruct *s = (MyStruct *)ptr;"
+  },
+  {
+    "id": "G004",
+    "rule": "Avoid usage of function pointers for non-callback functionalities",
+    "severity": "medium",
+    "category": "Code Safety",
+    "description": "Function pointers should be reserved for callback mechanisms or OS-level hook interfaces. Using them for general logic obscures flow and increases debugging complexity.",
+    "example": "void (*process)(); process = runTask;"
+  },
+  {
+    "id": "G005",
+    "rule": "Avoid tightly coupling application logic with hardware drivers",
+    "severity": "high",
+    "category": "Architecture",
+    "description": "Hardware-dependent code should be abstracted into layers. Tight coupling makes code non-portable and hard to test.",
+    "example": "sensorValue = *(volatile uint32_t *)0x40000000;"
+  },
+  {
+    "id": "G006",
+    "rule": "Modularize functionality by using layered architecture",
+    "severity": "medium",
+    "category": "Architecture",
+    "description": "Use driver, HAL, service, and app layers to decouple hardware logic from application logic and enable reuse.",
+    "example": "adc_read() defined in adc_driver.c, called in main_task.c"
+  },
+  {
+    "id": "G007",
+    "rule": "Prefer event-driven design over polling",
+    "severity": "high",
+    "category": "RTOS Design",
+    "description": "Polling wastes CPU cycles. Using events, semaphores or message queues allows efficient task switching.",
+    "example": "xSemaphoreTake(buttonEvent, portMAX_DELAY);"
+  },
+  {
+    "id": "G008",
+    "rule": "Avoid global variables across modules",
+    "severity": "high",
+    "category": "Memory Safety",
+    "description": "Global variables break encapsulation and lead to unintended side effects between modules.",
+    "example": "int globalCount; // Declared in header, accessed everywhere"
+  },
+  {
+    "id": "G009",
+    "rule": "Never use printf() or blocking calls inside ISRs",
+    "severity": "high",
+    "category": "ISR",
+    "description": "Blocking operations inside interrupts can crash the system or introduce jitter. ISRs must execute quickly and exit.",
+    "example": "void ISR() { printf(\"Interrupt!\"); }"
+  },
+  {
+    "id": "G010",
+    "rule": "Always disable global interrupts before configuring hardware-triggered ISRs",
+    "severity": "high",
+    "category": "ISR Safety",
+    "description": "Failing to disable interrupts during ISR setup can result in premature interrupt triggering and unpredictable behavior.",
+    "example": "__disable_irq(); setup(); __enable_irq();"
+  },
+  {
+    "id": "G011",
+    "rule": "Clear interrupt flags inside the ISR before exiting",
+    "severity": "high",
+    "category": "ISR Safety",
+    "description": "If interrupt flags are not cleared, the ISR may be re-triggered immediately after exit.",
+    "example": "EXTI->PR = EXTI_PR_PR0;"
+  },
+  {
+    "id": "G012",
+    "rule": "Avoid dynamic memory allocation in ISR or critical sections",
+    "severity": "high",
+    "category": "Memory Safety",
+    "description": "Memory allocation inside ISRs is unsafe due to fragmentation and blocking behavior. Use static buffers.",
+    "example": "malloc() inside ISR should be avoided"
+  },
+  {
+    "id": "G013",
+    "rule": "Use volatile keyword for shared ISR variables",
+    "severity": "high",
+    "category": "Concurrency",
+    "description": "Without 'volatile', the compiler might optimize away updates made by ISRs that are not visible to the main loop.",
+    "example": "volatile int flag;"
+  },
+  {
+    "id": "G014",
+    "rule": "Prioritize interrupts properly using NVIC or interrupt controller settings",
+    "severity": "medium",
+    "category": "ISR Design",
+    "description": "Configure interrupt priorities to prevent low-priority ISRs from blocking critical real-time tasks.",
+    "example": "NVIC_SetPriority(EXTI0_IRQn, 2);"
+  },
+  {
+    "id": "G015",
+    "rule": "Use semaphores/mutexes only when necessary",
+    "severity": "medium",
+    "category": "RTOS Design",
+    "description": "Excessive use of synchronization primitives can lead to deadlocks and increase system latency.",
+    "example": "Avoid nesting xSemaphoreTake() inside tasks"
+  },
+  {
+    "id": "G016",
+    "rule": "Avoid creating too many tasks with small stack sizes",
+    "severity": "medium",
+    "category": "RTOS Design",
+    "description": "Fragmented stacks across many tasks lead to memory overflow and hard-to-debug errors.",
+    "example": "xTaskCreate(..., 64); // Too small"
+  },
+  {
+    "id": "G017",
+    "rule": "Use state machines for event-based systems",
+    "severity": "high",
+    "category": "Design Pattern",
+    "description": "State machines provide clear structure for reactive systems and simplify maintenance of event flows.",
+    "example": "switch(state) { case IDLE: ... }"
+  },
+  {
+    "id": "G018",
+    "rule": "Avoid hardcoding timer values or delays",
+    "severity": "low",
+    "category": "Timing",
+    "description": "Hardcoded delays make the system unscalable. Use constants, defines, or config structures.",
+    "example": "vTaskDelay(1000); // Use #define TIMEOUT_MS"
+  },
+  {
+    "id": "G019",
+    "rule": "Use const and static keywords where applicable",
+    "severity": "medium",
+    "category": "Optimization",
+    "description": "const improves safety for read-only data, static limits scope. Both enable compiler optimizations.",
+    "example": "static const uint8_t LUT[256] = {...};"
+  },
+  {
+    "id": "G020",
+    "rule": "Use lookup tables instead of conditionals if speed is crucial",
+    "severity": "medium",
+    "category": "Optimization",
+    "description": "Lookup tables can reduce branching and increase speed for predictable decision trees.",
+    "example": "value = table[input];"
+  },
+  {
+    "id": "G021",
+    "rule": "Use #define or enum instead of magic numbers",
+    "severity": "medium",
+    "category": "Readability",
+    "description": "Named constants improve code readability, reuse, and maintainability.",
+    "example": "#define MAX_TIMEOUT 100"
+  },
+  {
+    "id": "G022",
+    "rule": "Limit function size to <50 LOC ideally",
+    "severity": "low",
+    "category": "Maintainability",
+    "description": "Long functions are harder to test and debug. Smaller ones improve modularity.",
+    "example": "// Break into helper functions"
+  },
+  {
+    "id": "G023",
+    "rule": "Avoid deeply nested if or switch blocks (>3 levels)",
+    "severity": "medium",
+    "category": "Readability",
+    "description": "Deep nesting leads to unreadable code and higher cyclomatic complexity.",
+    "example": "Use early returns or switch abstraction"
+  },
+  {
+    "id": "G024",
+    "rule": "Check for unused includes and variables to reduce binary size",
+    "severity": "low",
+    "category": "Optimization",
+    "description": "Dead code and unused includes increase build size and confuse readers.",
+    "example": "#include <stdio.h> // Not needed in embedded"
+  },
+  {
+    "id": "G025",
+    "rule": "Initialize all variables before use",
+    "severity": "high",
+    "category": "Safety",
+    "description": "Uninitialized variables may lead to undefined behavior or security issues.",
+    "example": "int counter = 0;"
+  },
+  {
+    "id": "G026",
+    "rule": "Always check return values of hardware access functions",
+    "severity": "high",
+    "category": "Reliability",
+    "description": "Ignoring return values can lead to silent failures and hard-to-find bugs.",
+    "example": "if (HAL_GPIO_WritePin(...) != HAL_OK) handleError();"
+  },
+  {
+    "id": "G027",
+    "rule": "Separate the driver code from application logic",
+    "severity": "high",
+    "category": "Architecture",
+    "description": "Driver modules should be hardware-specific and reusable. App logic should remain portable.",
+    "example": "driver_uart.c vs app_logger.c"
+  },
+  {
+    "id": "G028",
+    "rule": "Avoid using delays like _delay_ms() or busy-wait loops in production code",
+    "severity": "medium",
+    "category": "Timing",
+    "description": "Busy waits block CPU resources and reduce responsiveness. Use timers or non-blocking alternatives.",
+    "example": "Use xTaskDelayUntil() instead of while(delay--)"
+  }
+]

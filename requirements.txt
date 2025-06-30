@@ -1,0 +1,22 @@
+# Core LLM interaction
+litellm>=1.28.6
+
+# For sentence embeddings (used in RAG)
+sentence-transformers>=2.2.2
+scikit-learn>=1.3.0
+faiss-cpu>=1.7.4  # Optional: for faster nearest neighbor search
+
+# Code parsing (for .c/.h file structure)
+pycparser>=2.21
+
+# For async file and API handling
+aiohttp>=3.9.3
+
+# For converting review.json to HTML
+json2html>=1.3.0
+
+# Flask UI for editing guidelines
+Flask>=2.3.3
+
+# Utilities
+numpy>=1.25.0
