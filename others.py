@@ -81,3 +81,38 @@ def saveReviewToFile(reviewData, outputPath="code_review.json"):
     with open(outputPath, 'w') as f:
         json.dump(reviewData, f, indent=4)
     print(f"✅ Review saved to: {outputPath}")
+
+
+def extract_json_array(text):
+    start = text.find("[")
+    if start == -1:
+        return None
+
+    array_str = ""
+    current_obj = ""
+    brace_count = 0
+    inside_array = False
+    valid_objects = []
+
+    for char in text[start:]:
+        array_str += char
+
+        if char == "{":
+            brace_count += 1
+            current_obj += char
+        elif char == "}":
+            brace_count -= 1
+            current_obj += char
+
+            if brace_count == 0:
+                # Complete JSON object
+                try:
+                    obj = json.loads(current_obj)
+                    valid_objects.append(obj)
+                except:
+                    pass  # Skip invalid object
+                current_obj = ""
+        elif brace_count > 0:
+            current_obj += char
+
+    return valid_objects if valid_objects else None
