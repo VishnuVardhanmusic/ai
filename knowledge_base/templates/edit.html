@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Edit Guidelines {{ entry.id }}</title>
+  </head>
+  <body>
+    <h2>Edit Guideline: {{ entry.id }}</h2>
+    <form method="POST">
+      <input name="rule" value="{{ entry.rule }}" required /><br />
+      <input name="severity" value="{{ entry.severity }}" required /><br />
+      <input name="category" value="{{ entry.category }}" required /><br />
+      <textarea name="description" required>{{ entry.description }}</textarea
+      ><br />
+      <textarea name="example" required>{{ entry.example }}</textarea><br />
+      <button type="submit">Update</button>
+    </form>
+    <a href="/">Back</a>
+  </body>
+</html>
