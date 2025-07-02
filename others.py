@@ -116,3 +116,45 @@ def extract_json_array(text):
             current_obj += char
 
     return valid_objects if valid_objects else None
+
+##########################################################
+        def extract_json_array(text):
+            start = text.find("[")
+            if start == -1:
+                return []
+
+            array_str = ""
+            current_obj = ""
+            brace_count = 0
+            inside_array = False
+            valid_objects = []
+
+            for char in text[start:]:
+                array_str += char
+
+                if char == "{":
+                    brace_count += 1
+                    current_obj += char
+                elif char == "}":
+                    brace_count -= 1
+                    current_obj += char
+
+                    if brace_count == 0:
+                        # Try loading complete JSON object
+                        try:
+                            obj = json.loads(current_obj)
+                            valid_objects.append(obj)
+                        except:
+                            pass
+                        current_obj = ""
+                elif brace_count > 0:
+                    current_obj += char
+
+            return valid_objects  # returns [] if no objects parsed
+
+        parsed = extract_json_array(output)
+        return parsed if isinstance(parsed, list) else []
+
+    except Exception as e:
+        print("❌ Error during LLM review:", str(e))
+        return []
